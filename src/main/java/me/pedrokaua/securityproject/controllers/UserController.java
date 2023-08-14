@@ -2,9 +2,10 @@ package me.pedrokaua.securityproject.controllers;
 
 import jakarta.validation.Valid;
 import me.pedrokaua.securityproject.dtos.UserRecord;
-import me.pedrokaua.securityproject.entities.UserModel;
-import me.pedrokaua.securityproject.services.UserDetailsServiceImpl;
-import me.pedrokaua.securityproject.services.UserService;
+import me.pedrokaua.securityproject.exceptions.UserAlreadyExistsException;
+import me.pedrokaua.securityproject.models.entities.UserModel;
+import me.pedrokaua.securityproject.models.services.UserDetailsServiceImpl;
+import me.pedrokaua.securityproject.models.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserRecord>> findAll(){
-        return userService.findAll();
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 
     @GetMapping(value = "/")
@@ -34,7 +35,17 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> saveUser(@RequestBody @Valid UserModel entity){
-        return userService.saveUser(entity);
+    public ResponseEntity<Object> saveUser(@RequestBody @Valid UserModel entity) {
+        try {
+            Object response = userService.saveUser(entity);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (UserAlreadyExistsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
+
 }
+

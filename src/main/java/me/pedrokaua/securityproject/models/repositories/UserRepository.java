@@ -1,6 +1,6 @@
-package me.pedrokaua.securityproject.repositories;
+package me.pedrokaua.securityproject.models.repositories;
 
-import me.pedrokaua.securityproject.entities.UserModel;
+import me.pedrokaua.securityproject.models.entities.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<UserModel, UUID> {
 
     public Optional<UserModel> findByUsername(String username);
+    public Optional<UserModel> deleteByUsername(String username);
 }

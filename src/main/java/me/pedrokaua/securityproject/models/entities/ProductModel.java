@@ -1,4 +1,4 @@
-package me.pedrokaua.securityproject.entities;
+package me.pedrokaua.securityproject.models.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -58,5 +59,23 @@ public class ProductModel {
 
     public void setValue(Double value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ProductModel that = (ProductModel) o;
+        if(id != null && that.id != null){
+            return id.equals(that.id);
+        }
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

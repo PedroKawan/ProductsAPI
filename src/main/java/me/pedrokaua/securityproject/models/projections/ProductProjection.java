@@ -1,4 +1,4 @@
-package me.pedrokaua.securityproject.projections;
+package me.pedrokaua.securityproject.models.projections;
 
 public interface ProductProjection {
 

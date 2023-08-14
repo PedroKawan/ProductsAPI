@@ -1,7 +1,7 @@
-package me.pedrokaua.securityproject.services;
+package me.pedrokaua.securityproject.models.services;
 
-import me.pedrokaua.securityproject.entities.UserModel;
-import me.pedrokaua.securityproject.repositories.UserRepository;
+import me.pedrokaua.securityproject.models.entities.UserModel;
+import me.pedrokaua.securityproject.models.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,9 +1,9 @@
-package me.pedrokaua.securityproject.services;
+package me.pedrokaua.securityproject.models.services;
 
 import me.pedrokaua.securityproject.controllers.ProductController;
 import me.pedrokaua.securityproject.dtos.ProductDTO;
-import me.pedrokaua.securityproject.entities.ProductModel;
-import me.pedrokaua.securityproject.repositories.ProductRepository;
+import me.pedrokaua.securityproject.models.entities.ProductModel;
+import me.pedrokaua.securityproject.models.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
@@ -24,24 +24,21 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public ResponseEntity<List<ProductModel>> findAll(){
-        List<ProductModel> list = productRepository.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+    public List<ProductModel> findAll(){
+        return productRepository.findAll();
     }
 
-    public ResponseEntity<List<ProductDTO>> findAllString(){
-        List<ProductDTO> list = productRepository.findAllString().stream().map(ProductDTO::new).toList();
-        if (!list.isEmpty()){
-            for(ProductDTO product: list){
-                String id = product.getId();
-                product.add(linkTo(methodOn(ProductController.class).findById(id)).withRel("product"));
-            }
-        }
+    public List<ProductDTO> findAllString(){
+        List<ProductDTO> list = productRepository.findAllString()
+                .stream()
+                .map(ProductDTO::new)
+                .map(p -> p.add(linkTo(methodOn(ProductController.class).findById(p.getId())).withRel("product")))
+                .toList();
 
-        return ResponseEntity.status(HttpStatus.OK).body(list);
+        return list;
     }
 
-    public ResponseEntity<Object> findById(String id){
+    public Object findById(String id){
         Optional<ProductModel> product = Optional.empty();
         try {
             product = productRepository.findById(UUID.fromString(id));
@@ -55,10 +52,10 @@ public class ProductService {
         var productDTO = new ProductDTO(product.get());
         productDTO.add(linkTo(methodOn(ProductController.class).findAllString()).withRel("list"));
 
-        return ResponseEntity.status(HttpStatus.OK).body(productDTO);
+        return productDTO;
     }
 
-    public ResponseEntity<Object> saveProduct(ProductModel productModel){
+    public Object saveProduct(ProductModel productModel){
         if (productModel == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in Request-Body of the Product!");
         }
@@ -67,7 +64,7 @@ public class ProductService {
         }
 
         productRepository.save(productModel);
-        return ResponseEntity.status(HttpStatus.OK).body(productModel);
+        return productModel;
     }
 
 

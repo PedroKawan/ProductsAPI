@@ -1,7 +1,7 @@
 package me.pedrokaua.securityproject.dtos;
 
-import me.pedrokaua.securityproject.entities.ProductModel;
-import me.pedrokaua.securityproject.projections.ProductProjection;
+import me.pedrokaua.securityproject.models.entities.ProductModel;
+import me.pedrokaua.securityproject.models.projections.ProductProjection;
 import org.springframework.hateoas.RepresentationModel;
 
 public class ProductDTO extends RepresentationModel<ProductDTO> {

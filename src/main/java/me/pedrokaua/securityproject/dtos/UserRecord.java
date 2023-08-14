@@ -1,6 +1,6 @@
 package me.pedrokaua.securityproject.dtos;
 
-import me.pedrokaua.securityproject.entities.UserModel;
+import me.pedrokaua.securityproject.models.entities.UserModel;
 
 public record UserRecord(String id, String username, String password) {
 

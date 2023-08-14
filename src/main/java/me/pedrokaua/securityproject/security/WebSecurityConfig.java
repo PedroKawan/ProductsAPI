@@ -1,11 +1,9 @@
 package me.pedrokaua.securityproject.security;
 
-import me.pedrokaua.securityproject.services.UserDetailsServiceImpl;
+import me.pedrokaua.securityproject.models.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,11 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -35,10 +31,11 @@ public class WebSecurityConfig {
         //http.addFilterBefore(new MyFilter(), UsernamePasswordAuthenticationFilter.class);
         return http
                 .authorizeHttpRequests(c -> {
-                    c.requestMatchers("/").permitAll();
+                   /* c.requestMatchers("/").permitAll();
                     c.requestMatchers("/logout").permitAll();
                     c.requestMatchers(HttpMethod.GET, "/api/products").permitAll();
-                    c.anyRequest().authenticated();
+                    c.anyRequest().authenticated();*/
+                    c.anyRequest().permitAll();
                 })
                 .httpBasic(Customizer.withDefaults())
                 .build();

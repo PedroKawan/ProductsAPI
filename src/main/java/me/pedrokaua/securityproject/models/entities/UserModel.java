@@ -1,9 +1,8 @@
-package me.pedrokaua.securityproject.entities;
+package me.pedrokaua.securityproject.models.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import me.pedrokaua.securityproject.enums.RoleTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -103,5 +102,25 @@ public class UserModel implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserModel userModel = (UserModel) o;
+        if(id != null && userModel.id != null) {
+            if (!id.equals(userModel.id)) return false;
+        }
+
+        return username.equals(userModel.username);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + username.hashCode();
+        return result;
     }
 }
