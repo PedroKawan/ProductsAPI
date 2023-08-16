@@ -1,7 +1,9 @@
 package me.pedrokaua.securityproject.models.services;
 
+import jakarta.persistence.EntityNotFoundException;
 import me.pedrokaua.securityproject.controllers.ProductController;
 import me.pedrokaua.securityproject.dtos.ProductDTO;
+import me.pedrokaua.securityproject.exceptions.ProductAlreadyRegisteredException;
 import me.pedrokaua.securityproject.models.entities.ProductModel;
 import me.pedrokaua.securityproject.models.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,29 +40,30 @@ public class ProductService {
         return list;
     }
 
-    public Object findById(String id){
-        Optional<ProductModel> product = Optional.empty();
+    public Object findById(String id) throws IllegalArgumentException, EntityNotFoundException{
+            Optional<ProductModel> product;
         try {
             product = productRepository.findById(UUID.fromString(id));
-
             if (product.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product Not Found By Id: " + id);
+                throw new EntityNotFoundException("User not found!");
             }
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Request Error! Id Not Acceptable.");
-        }
-        var productDTO = new ProductDTO(product.get());
-        productDTO.add(linkTo(methodOn(ProductController.class).findAllString()).withRel("list"));
 
-        return productDTO;
+            var productDTO = new ProductDTO(product.get());
+            productDTO.add(linkTo(methodOn(ProductController.class).findAllString()).withRel("list"));
+            return productDTO;
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
     }
 
     public Object saveProduct(ProductModel productModel){
         if (productModel == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in Request-Body of the Product!");
+            throw new NullPointerException("Entity null");
         }
         if (productRepository.findOne(Example.of(productModel)).isPresent()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product Already Exists!");
+            throw new ProductAlreadyRegisteredException();
         }
 
         productRepository.save(productModel);

@@ -1,7 +1,9 @@
 package me.pedrokaua.securityproject.controllers;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import me.pedrokaua.securityproject.dtos.ProductDTO;
+import me.pedrokaua.securityproject.exceptions.ProductAlreadyRegisteredException;
 import me.pedrokaua.securityproject.models.entities.ProductModel;
 import me.pedrokaua.securityproject.models.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,25 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public @ResponseBody ResponseEntity<Object> findById(@PathVariable(value = "id") String id){
-        return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
+    public @ResponseBody ResponseEntity<Object> findById(@PathVariable(value = "id") String id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product Not Found By Id: " + id);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
+        }
     }
+
 
     @PostMapping
     public @ResponseBody ResponseEntity<Object> saveProduct(@RequestBody @Valid ProductModel entity){
-        return ResponseEntity.status(HttpStatus.OK).body(productService.saveProduct(entity));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(productService.saveProduct(entity));
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error in Request-Body of the Product!");
+        } catch (ProductAlreadyRegisteredException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product Already Exists!");
+        }
     }
 }
